@@ -1,0 +1,3 @@
+:set -isrc
+:set -itest/src
+:set -i../src

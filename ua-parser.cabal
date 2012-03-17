@@ -1,0 +1,34 @@
+Name:                ua-parser
+Version:             0.1
+Synopsis:            A user agent string parser in Haskell
+License:             BSD3
+License-file:        LICENSE
+Author:              Ozgun Ataman
+Maintainer:          ozgun.ataman@soostone.com
+Category:            Web
+Build-type:          Simple
+Cabal-version:       >=1.2
+
+
+data-files:
+  resources/*.yaml
+  test/resources/*.yaml
+
+Library
+  hs-source-dirs: src
+  Exposed-modules:
+    Web.UAParser
+  other-modules:
+    Paths_ua_parser
+
+
+  Build-depends:       
+      base
+    , bytestring
+    , text
+    , pcre-light
+    , yaml
+    , aeson
+    , filepath
+
+  ghc-options: -O2 -Wall  
