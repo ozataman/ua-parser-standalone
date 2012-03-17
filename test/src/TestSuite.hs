@@ -34,11 +34,11 @@ $(derives [makeNFData] [''UAResult])
 
 
 
-main = do
-  arg <- getArgs
-  case arg of
-    ["bench"] -> benchMain
-    _ -> testMain
+main = benchMain
+  -- arg <- getArgs
+  -- case arg of
+  --   ["bench"] -> benchMain
+  --   _ -> testMain
 
 
 
@@ -52,9 +52,9 @@ benchMain = do
   conf <- loadConfig "../resources/user_agent_parser.yaml"
   cases <- loadTests "resources/test_user_agent_parser.yaml"
   cases2 <- loadTests "resources/firefox_user_agent_strings.yaml"
-  let allC = take 200000 . cycle $ cases ++ cases2
-      one = head allC
+  let allC = cases ++ cases2
       ua = bench "UA Parsing" $ nf (map (parseUA conf . uatcString)) allC
+  print $ show (length allC) ++ " strings being parsed."
   C.defaultMain [ua]
         
 

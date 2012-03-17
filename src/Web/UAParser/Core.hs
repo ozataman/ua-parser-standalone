@@ -68,7 +68,8 @@ parseUA UAConfig{..} bs = foldr mplus Nothing $ map go uaParsers
           mkRes [_,f,v1,v2] = Just $ UAResult (repF f) (repV1 v1) (Just v2) Nothing
           mkRes [_,f,v1] = Just $ UAResult (repF f) (repV1 v1) Nothing Nothing
           mkRes [_, f] = Just $ UAResult (repF f) Nothing Nothing Nothing
-          mkRes x = error $  "Unsupported match in parseUA" ++ show x
+          mkRes x = Nothing
+          -- error $  "Unsupported match in parseUA" ++ show x
           
           repV1 x = uaV1Rep `mplus` Just x
           repF x = maybe x id uaFamRep
