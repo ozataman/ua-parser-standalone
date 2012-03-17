@@ -1,14 +1,17 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE NoMonomorphismRestriction #-}
 {-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE DeriveDataTypeable #-}
 
 module Web.UAParser.Core
     ( UAConfig (..)
     , loadConfig
     , parseUA
     , UAResult (..)
+    , uarVersion
     , parseOS
     , OSResult (..)
+    , osrVersion
     ) where
     
 
@@ -18,6 +21,9 @@ import           Control.Monad
 import           Data.Aeson
 import           Data.ByteString.Char8 (ByteString)
 import qualified Data.ByteString.Char8 as B
+import           Data.Default
+import Data.Generics
+import Data.Maybe
 import           Data.Text             (Text)
 import qualified Data.Text             as T
 import qualified Data.Text.Encoding    as T
@@ -75,8 +81,21 @@ data UAResult = UAResult {
     , uarV1 :: Maybe Text
     , uarV2 :: Maybe Text
     , uarV3 :: Maybe Text
-    } deriving (Show, Eq)
+    } deriving (Show, Eq, Typeable, Data)
     
+
+-------------------------------------------------------------------------------
+-- | Construct a browser versionstring from 'UAResult'
+uarVersion :: UAResult -> Text
+uarVersion UAResult{..} = 
+    T.intercalate "." . catMaybes . takeWhile isJust $ [uarV1, uarV2, uarV3]
+
+
+-------------------------------------------------------------------------------
+instance Default UAResult where
+    def = UAResult "" Nothing Nothing Nothing 
+
+
 
                                 ---------------
                                 -- OS Parser --
@@ -115,8 +134,17 @@ data OSResult = OSResult {
     , osrV2 :: Maybe Text
     , osrV3 :: Maybe Text
     , osrV4 :: Maybe Text
-    } deriving (Show,Eq)
+    } deriving (Show,Eq,Typeable,Data)
 
+instance Default OSResult where
+    def = OSResult "" Nothing Nothing Nothing Nothing
+
+
+-------------------------------------------------------------------------------
+-- | Construct a version string from 'OSResult'
+osrVersion :: OSResult -> Text
+osrVersion OSResult{..} = 
+    T.intercalate "." . catMaybes . takeWhile isJust $ [osrV1, osrV2, osrV3, osrV4]
 
                               -------------------
                               -- Parser Config --

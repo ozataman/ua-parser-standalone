@@ -10,9 +10,11 @@ module Web.UAParser
     -- * Parsing browser (user agent)
     , parseUA
     , UAResult (..)
+    , uarVersion
     -- * Parsing OS
     , parseOS
     , OSResult (..)
+    , osrVersion
     ) where
     
 

@@ -28,6 +28,8 @@ Executable test
     , test-framework
     , test-framework-hunit
     , test-framework-quickcheck2
+    , data-default
+    , syb
 
   ghc-options: -O2 -Wall -fwarn-tabs
 
