@@ -1,5 +1,5 @@
 Name:                ua-parser
-Version:             0.1
+Version:             0.1.1
 Synopsis:            A user agent string parser in Haskell
 License:             BSD3
 License-file:        LICENSE
@@ -7,7 +7,7 @@ Author:              Ozgun Ataman
 Maintainer:          ozgun.ataman@soostone.com
 Category:            Web
 Build-type:          Simple
-Cabal-version:       >=1.2
+Cabal-version:       >=1.6
 
 
 data-files:

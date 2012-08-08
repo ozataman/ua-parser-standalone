@@ -1,6 +1,6 @@
-{-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE RecordWildCards   #-}
+{-# LANGUAGE TemplateHaskell   #-}
 
 module Main where
 
@@ -34,11 +34,11 @@ $(derives [makeNFData] [''UAResult])
 
 
 
-main = benchMain
-  -- arg <- getArgs
-  -- case arg of
-  --   ["bench"] -> benchMain
-  --   _ -> testMain
+main = do
+  arg <- getArgs
+  case arg of
+    ["bench"] -> benchMain
+    _ -> testMain
 
 
 
@@ -56,20 +56,20 @@ benchMain = do
       ua = bench "UA Parsing" $ nf (map (parseUA conf . uatcString)) allC
   print $ show (length allC) ++ " strings being parsed."
   C.defaultMain [ua]
-        
+
 
 
                                  -------------
                                  -- Testing --
                                  -------------
 
-          
+
 testMain = T.defaultMain tests
-    where 
-      tests = 
-        [ uaTests 
+    where
+      tests =
+        [ uaTests
         , osTests ]
-        
+
 
                                ----------------
                                -- UA Testing --
@@ -83,7 +83,7 @@ uaTests = buildTest $ do
   cases2 <- loadTests "resources/firefox_user_agent_strings.yaml"
   let allC = cases ++ cases2
   return $ testGroup "UA Parsing Tests" $ map (testUAParser conf) allC
-  
+
 
 
 -------------------------------------------------------------------------------
@@ -96,7 +96,7 @@ testUAParser config UATC{..} = testCase tn $ do
      -- assertEqual "v1 is the same" uatcV1 uarV1
      -- assertEqual "v2 is the same" uatcV2 uarV2
      -- assertEqual "v3 is the same" uatcV3 uarV3
-  where 
+  where
     parsed = parseUA config uatcString
     tn = T.unpack $ T.intercalate "/" ["UA Test: ", uatcFamily, m uatcV1, m uatcV2, m uatcV3]
     m x = maybe "-" id x
@@ -113,7 +113,7 @@ osTests = buildTest $ do
   conf <- loadConfig "../resources/user_agent_parser.yaml"
   cases <- loadTests "resources/test_user_agent_parser_os.yaml"
   return $ testGroup "OS Parsing Tests" $ map (testOSParser conf) cases
-  
+
 
 
 -------------------------------------------------------------------------------
@@ -126,9 +126,9 @@ testOSParser config OSTC{..} = testCase tn $ do
      -- assertEqual "v1 is the same" uatcV1 uarV1
      -- assertEqual "v2 is the same" uatcV2 uarV2
      -- assertEqual "v3 is the same" uatcV3 uarV3
-  where 
+  where
     parsed = parseOS config ostcString
-    tn = T.unpack $ T.intercalate "/" 
+    tn = T.unpack $ T.intercalate "/"
          ["OS Test: ", ostcFamily, m ostcV1, m ostcV2, m ostcV3, m ostcV4]
     m x = maybe "-" id x
 
@@ -143,7 +143,7 @@ loadTests fp = do
   case xs of
     Nothing -> error "Can't load test file"
     Just xs' -> return xs'
-  
+
 
 -------------------------------------------------------------------------------
 data UserAgentTestCase = UATC {
@@ -153,11 +153,11 @@ data UserAgentTestCase = UATC {
     , uatcV2 :: Maybe Text
     , uatcV3 :: Maybe Text
     } deriving (Show)
-    
+
 
 -------------------------------------------------------------------------------
 instance FromJSON UserAgentTestCase where
-    parseJSON (Object v) = 
+    parseJSON (Object v) =
       UATC <$> v .: "user_agent_string"
            <*> (v .: "family" <|> return "")
            <*> (v .:? "v1" <|> return Nothing)
@@ -178,12 +178,12 @@ data OSTestCase = OSTC {
 
 -------------------------------------------------------------------------------
 instance FromJSON OSTestCase where
-    parseJSON (Object v) = 
+    parseJSON (Object v) =
       OSTC <$> (v .: "user_agent_string" <|> return "")
            <*> (v .: "os" <|> return "")
            <*> (v .:? "os_v1" <|> return Nothing)
            <*> (v .:? "os_v2" <|> return Nothing)
            <*> (v .:? "os_v3" <|> return Nothing)
            <*> (v .:? "os_v4" <|> return Nothing)
-      
-    
+
+
